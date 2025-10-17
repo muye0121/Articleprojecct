@@ -1,19 +1,19 @@
 import type { FC } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Space,message } from "antd";
+import { Button, Form, Input, Space} from "antd";
 import { Link } from "react-router-dom";
-import { useSubmit,redirect,useNavigation} from "react-router-dom";
+import { useSubmit, redirect, useNavigation } from "react-router-dom";
 import type { ActionFunctionArgs } from "react-router-dom";
 import { regApi } from "@/api/auth.api";
-import to from 'await-to-js'
+import to from "await-to-js";
 const Reg: FC = () => {
-  const submit=useSubmit();
-  const navigation=useNavigation()
-  const onFinish = (values:RegForm) => {
-    submit(values,{
-      method:'POST',
-      action:'/reg'
-    })
+  const submit = useSubmit();
+  const navigation = useNavigation();
+  const onFinish = (values: RegForm) => {
+    submit(values, {
+      method: "POST",
+      action: "/reg",
+    });
   };
   return (
     <Form onFinish={onFinish} size="large">
@@ -44,16 +44,17 @@ const Reg: FC = () => {
       </Form.Item>
       <Form.Item
         name="repassword"
-        dependencies={['password']}
+        dependencies={["password"]}
         validateFirst
         rules={[
           { required: true, message: "请确认密码!" },
           { pattern: /^\S{6,15}$/, message: "密码必须是6-15位的非空字符！" },
-          ({getFieldValue})=>({
-            validator(_,value){
-                if(value===getFieldValue('password'))return Promise.resolve()
-                return Promise.reject(new Error('两次密码不一致'))
-            }})
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (value === getFieldValue("password")) return Promise.resolve();
+              return Promise.reject(new Error("两次密码不一致"));
+            },
+          }),
         ]}
       >
         <Input
@@ -65,7 +66,11 @@ const Reg: FC = () => {
 
       <Form.Item>
         <Space direction="vertical">
-          <Button type="primary" htmlType="submit" loading={navigation.state!='idle'&&{delay:200}}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={navigation.state != "idle" && { delay: 200 }}
+          >
             Register
           </Button>
           <div>
@@ -76,11 +81,11 @@ const Reg: FC = () => {
     </Form>
   );
 };
-export const action=async ({request}:ActionFunctionArgs)=>{
-  const fd=await request.formData()
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const fd = await request.formData();
   //调用注册的接口
-  const [err]=await to(regApi(fd))
-  if(err) return null
-  return redirect('/login?uname='+fd.get('username'))
-}
+  const [err] = await to(regApi(fd));
+  if (err) return null;
+  return redirect("/login?uname=" + fd.get("username"));
+};
 export default Reg;
