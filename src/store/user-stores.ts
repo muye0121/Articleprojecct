@@ -28,6 +28,7 @@ export default useUserStore;
 export const selectName=(state:UserStoreType)=>{return state.user.nickname||state.user.username}
 //初始化用户的基本信息
 export const selectAvatar=(state:UserStoreType)=>{return state.user.user_pic}
+export const selectUserinfo=(state:UserStoreType)=>{return {id:state.user.id,nickname:state.user.nickname,email:state.user.email}}
 export const initUser = async () => {
   const [err, res] = await to(getUserApi());
   if (err) return null;

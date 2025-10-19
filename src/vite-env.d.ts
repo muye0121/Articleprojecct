@@ -29,3 +29,5 @@ type MenuItem = {
   icon: element;
   children:MenuItem[]
 };
+type UserInfoForm=Pick<User,'id'|'nickname'|'email'>
+

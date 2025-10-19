@@ -7,7 +7,7 @@ import Home from "@/views/home/home";
 import AuthLayout from "@/views/auth/auth-layout";
 import UserAvatar from "@/views/user/user-avatar";
 import UserPassword from "@/views/user/user-password";
-import UserInfo from "@/views/user/user-info";
+import UserInfo,{action as userInfoAction}from "@/views/user/user-info";
 import ArticleList from "@/views/article/article-list";
 import ArticleEdit from "@/views/article/article-edit";
 import ArticleCate from "@/views/article/article-cate";
@@ -45,7 +45,7 @@ const rooter = createBrowserRouter([
         path: "home",
         element: <Home />,
       },
-      { path: "user-info", element: <UserInfo /> },
+      { path: "user-info", action:userInfoAction,element: <UserInfo /> },
       { path: "user-avatar", element: <UserAvatar /> },
       { path: "user-pwd", element: <UserPassword /> },
       { path: "art-cate", element: <ArticleCate /> },
