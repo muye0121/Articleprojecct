@@ -2,14 +2,18 @@ import type { FC } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Button, Input, Space } from "antd";
 import { Link } from "react-router-dom";
-import { useFetcher, redirect, ActionFunctionArgs,useSearchParams } from "react-router-dom";
+import {
+  useFetcher,
+  ActionFunctionArgs,
+  useSearchParams,
+} from "react-router-dom";
 import to from "await-to-js";
 import { loginApi } from "@/api/auth.api";
 import { setToken } from "@/store/app-store";
 const Login: FC = () => {
-  const [searchParams]=useSearchParams()  
+  const [searchParams] = useSearchParams();
   const loginFetcher = useFetcher();
-  const [form]=Form.useForm()
+  const [form] = Form.useForm();
   const onFinish = (values: LoginForm) => {
     form.resetFields();
     loginFetcher.submit(values, {
@@ -18,7 +22,12 @@ const Login: FC = () => {
     });
   };
   return (
-    <Form form={form} onFinish={onFinish} initialValues={{username:searchParams.get('uname')}} size="large">
+    <Form
+      form={form}
+      onFinish={onFinish}
+      initialValues={{ username: searchParams.get("uname") }}
+      size="large"
+    >
       <Form.Item
         name="username"
         rules={[
@@ -46,7 +55,12 @@ const Login: FC = () => {
       </Form.Item>
       <Form.Item>
         <Space direction="vertical">
-          <Button block type="primary" htmlType="submit" loading={loginFetcher.state!='idle'&&{delay:200}}>
+          <Button
+            block
+            type="primary"
+            htmlType="submit"
+            loading={loginFetcher.state != "idle" && { delay: 200 }}
+          >
             Log in
           </Button>
           <div>
@@ -56,14 +70,12 @@ const Login: FC = () => {
       </Form.Item>
     </Form>
   );
-
 };
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const fd = await request.formData();
-    //调用登录的接口
-    const [err,res] = await to(loginApi(fd));
-    if (err) return null;
-    setToken(res.token)
-    return redirect('/')
-  };
+  const fd = await request.formData();
+  //调用登录的接口
+  const [err, res] = await to(loginApi(fd));
+  if (err) return null;
+  setToken(res.token);
+};
 export default Login;
