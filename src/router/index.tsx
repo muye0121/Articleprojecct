@@ -5,8 +5,8 @@ import Root, { loader as rootloader } from "@/views/root/root";
 import AuthRoot from "@/views/root/auth-root";
 import Home from "@/views/home/home";
 import AuthLayout from "@/views/auth/auth-layout";
-import UserAvatar from "@/views/user/user-avatar";
-import UserPassword from "@/views/user/user-password";
+import UserAvatar,{action as userAvatarAction} from "@/views/user/user-avatar";
+import UserPassword,{action as userPwdAction}from "@/views/user/user-password";
 import UserInfo,{action as userInfoAction}from "@/views/user/user-info";
 import ArticleList from "@/views/article/article-list";
 import ArticleEdit from "@/views/article/article-edit";
@@ -46,8 +46,8 @@ const rooter = createBrowserRouter([
         element: <Home />,
       },
       { path: "user-info", action:userInfoAction,element: <UserInfo /> },
-      { path: "user-avatar", element: <UserAvatar /> },
-      { path: "user-pwd", element: <UserPassword /> },
+      { path: "user-avatar", element: <UserAvatar />,action:userAvatarAction},
+      { path: "user-pwd", element: <UserPassword />,action:userPwdAction},
       { path: "art-cate", element: <ArticleCate /> },
       { path: "art-list", element: <ArticleList /> },
       { path: "art-add", element: <ArticleAdd /> },

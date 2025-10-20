@@ -30,4 +30,9 @@ type MenuItem = {
   children:MenuItem[]
 };
 type UserInfoForm=Pick<User,'id'|'nickname'|'email'>
+type ResetPwdForm={
+  old_pwd:string;
+  new_ped:string;
+  re_pwd:string;
+}
 
