@@ -13,6 +13,9 @@ const ArticleCover: FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files;
     if (!files || files.length === 0) return;
+    //size单位是字节
+    //1M=1024KB=1024*1023B
+    if(files[0].size>1024*1024*2) return message.error('封面图片大小不能超过2M!')
     setArticleCover(files[0]);
   };
   const handleNext = () => {
