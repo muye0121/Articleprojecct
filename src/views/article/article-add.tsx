@@ -20,7 +20,7 @@ import ArticleCover from "@/components/article-add/art-cover";
 import { postArticleApi } from "@/api/article-api";
 import { StorageValue } from "zustand/middleware";
 // 静态的数据源，没必要定义到组件中
-const stepItems = [
+export const stepItems = [
   {
     title: "基本信息",
   },
