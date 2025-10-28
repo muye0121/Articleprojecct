@@ -1,11 +1,12 @@
 import type { FC } from "react";
-import { initArticle, resetCurrent, updateCurrent } from "@/store/art-edit-store";
+import { initArticle, updateCurrent } from "@/store/art-edit-store";
 import { message, Modal, Steps } from "antd";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef,} from "react";
 import {
   LoaderFunctionArgs,
   useBeforeUnload,
   useBlocker,
+  defer,
 } from "react-router-dom";
 import { stepItems } from "@/views/article/article-add";
 import { ArticleSteps, Move } from "@/store/art-add-store";
@@ -64,11 +65,9 @@ const ArticleEdit: FC = () => {
 };
 export default ArticleEdit;
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  await initArticle(params.id!);
-  const [err, res] = await to(getCateListApi());
-  if (err) return null;
-  resetCurrent();
-  return { cateList: res.data };
+  const flag =initArticle(params.id!);
+  const cates=getCateListApi() 
+  return defer({ cates,flag });
 };
 export const action = async () => {
   const article = useArticleEditStore.getState().article;

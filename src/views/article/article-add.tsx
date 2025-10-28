@@ -5,6 +5,7 @@ import ArticleResult from "@/components/article-add/art-result";
 import ArticleBase from "@/components/article-add/art-base";
 import ArticleContent from "@/components/article-add/art-content";
 import { getCateListApi } from "@/api/cate-api";
+import { defer } from "react-router-dom";
 import localforage from "@/utils/localforage";
 import useArtAddStore, {
   clearArticle,
@@ -87,9 +88,8 @@ export const loader = async () => {
   if (current === ArticleSteps.done) {
     resetCurrent()
   }
-  const [err, res] = await to(getCateListApi());
-  if (err) return null;
-  return { cates: res.data };
+  const result=getCateListApi()
+  return defer({result});
 };
 export default ArticleAdd;
 export const action = async () => {

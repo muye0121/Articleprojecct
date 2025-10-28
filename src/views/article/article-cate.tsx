@@ -5,13 +5,16 @@ import {
   getCateListApi,
   postCateApi,
 } from "@/api/cate-api";
+import { Suspense } from "react";
+import { Await } from "react-router-dom";
 import to from "await-to-js";
-import { ActionFunctionArgs, useLoaderData } from "react-router-dom";
+import { ActionFunctionArgs, defer, useLoaderData } from "react-router-dom";
 import { Table, Space, message } from "antd";
 import type { TableProps } from "antd";
 import ButtonAdd from "@/components/article-cate/btn-add";
 import ButtonEdit from "@/components/article-cate/btn-edit";
 import ButtonDelete from "@/components/article-cate/btn-del";
+import LoaderErrorElement from "@/components/common/loader-error-element";
 const columns: TableProps<CateItem>["columns"] = [
   {
     title: "序号",
@@ -40,14 +43,19 @@ const columns: TableProps<CateItem>["columns"] = [
   },
 ];
 const ArticleCate: FC = () => {
-  const loaderData = useLoaderData() as { cates: CateItem[] };
+  const loaderData = useLoaderData() as { result: Promise<BaseResponse<CateItem[]>> };
   return (
-    loaderData && (
+    <Suspense fallback={<Table loading={true}/>}>
+      <Await
+        resolve={loaderData.result}
+        errorElement={<LoaderErrorElement></LoaderErrorElement>}
+      >
+        {(result:BaseResponse<CateItem[]>) =>
       <div>
         <Space direction="vertical" style={{ display: "flex" }}>
           <ButtonAdd />
           <Table
-            dataSource={loaderData.cates}
+            dataSource={result.data}
             columns={columns}
             size="middle"
             rowKey="id"
@@ -55,15 +63,16 @@ const ArticleCate: FC = () => {
             bordered
           />
         </Space>
-      </div>
-    )
+      </div>}
+      </Await>
+    </Suspense>
   );
 };
 export default ArticleCate;
 export const loader = async () => {
-  const [err, res] = await to(getCateListApi());
-  if (err) return null;
-  return { cates: res.data };
+  //调用接口，请求分类的列表数据
+  const result = getCateListApi();
+  return defer({ result });
 };
 export const action = async ({ request }: ActionFunctionArgs) => {
   const fd = await request.formData();
