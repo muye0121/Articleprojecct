@@ -31,7 +31,7 @@ export const selectAvatar=(state:UserStoreType)=>{return state.user.user_pic}
 export const selectUserinfo=(state:UserStoreType)=>{return {id:state.user.id,nickname:state.user.nickname,email:state.user.email}}
 export const initUser = async () => {
   const [err, res] = await to(getUserApi());
-  if (err) return null;
+  if (err) return ;
   useUserStore.setState((state) => {
     if (res.data) {
       state.user = res.data;

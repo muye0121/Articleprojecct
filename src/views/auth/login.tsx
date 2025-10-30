@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Form, Button, Input, Space } from "antd";
+import { Form, Button, Input, Space, message } from "antd";
 import { Link } from "react-router-dom";
 import {
   useFetcher,
@@ -15,6 +15,7 @@ const Login: FC = () => {
   const loginFetcher = useFetcher();
   const [form] = Form.useForm();
   const onFinish = (values: LoginForm) => {
+    if(loginFetcher.state==='submitting') return
     form.resetFields();
     loginFetcher.submit(values, {
       method: "POST",
@@ -34,7 +35,7 @@ const Login: FC = () => {
           { required: true, message: "请输入用户名！" },
           {
             pattern: /^[a-zA-Z0-9]{1,10}$/,
-            message: "用户名必须是1-10位的字母数字！",
+            message: "用户名必须是1-10位的字母数字!",
           },
         ]}
       >
@@ -44,7 +45,7 @@ const Login: FC = () => {
         name="password"
         rules={[
           { required: true, message: "请输入密码!" },
-          { pattern: /^\S{6,15}$/, message: "密码必须是6-15位的非空字符！" },
+          { pattern: /^\S{6,15}$/, message: "密码必须是6-15位的非空字符!" },
         ]}
       >
         <Input
@@ -59,7 +60,7 @@ const Login: FC = () => {
             block
             type="primary"
             htmlType="submit"
-            loading={loginFetcher.state != "idle" && { delay: 200 }}
+            loading={loginFetcher.state ==='submitting' && { delay: 200 }}
           >
             Log in
           </Button>
@@ -77,5 +78,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const [err, res] = await to(loginApi(fd));
   if (err) return null;
   setToken(res.token);
+  message.success('登陆成功')
 };
 export default Login;

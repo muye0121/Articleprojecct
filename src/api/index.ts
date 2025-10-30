@@ -19,12 +19,21 @@ instance.interceptors.request.use(
     const method = config.method?.toUpperCase();
 //为config挂载请求转换器
     if (
-      (url === "/my/article//add" && method === "POST") ||
+      (url === "/my/article/add" && method === "POST") ||
       (url === "/my/article/info" && method === "PUT")
     ) {
       config.transformRequest = [];
     } else {
       config.transformRequest = requestTransformer;
+    }
+    config.paramsSerializer={
+      serialize(params){
+        if(params instanceof FormData){
+          return qs.stringify(Object.fromEntries(params))
+        }else{
+          return qs.stringify(params)
+        }
+      }
     }
     const token=useAppStore.getState().token
     if(url?.includes('/my')&&token){

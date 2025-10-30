@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Breadcrumb } from "antd";
-import { useLoaderData, useLocation } from "react-router-dom";
+import { matchPath, useAsyncValue,useLocation } from "react-router-dom";
 import { useMemo } from "react";
 type BreadcrumbItem = {
   title: string;
@@ -8,10 +8,13 @@ type BreadcrumbItem = {
 const RootBreadcrumb: FC = () => {
   const location = useLocation();
   const nowPath = location.pathname === "/" ? "/home" : location.pathname;
-  const loaderdata = useLoaderData() as { menus: MenuItem[] } | null;
+  const [menuResult]=useAsyncValue() as [BaseResponse<MenuItem[]>]
+  const menus=useMemo(()=>{
+    return menuResult.data||[]
+  },[menuResult])
   const items = useMemo(() => {
-    return resolveBreadcrumpItems(loaderdata?.menus, nowPath);
-  }, [loaderdata, nowPath]);
+    return resolveBreadcrumpItems(menus, nowPath);
+  }, [menus, nowPath]);
   return <Breadcrumb items={items} />;
 };
 const resolveBreadcrumpItems = (
@@ -21,7 +24,8 @@ const resolveBreadcrumpItems = (
 ): BreadcrumbItem[] | undefined => {
   if (!menus) return;
   for (const item of menus) {
-    if (item.key === nowPath) {
+    const matchResult=matchPath(item.key,nowPath)
+    if (matchResult) {
       breadcrumbItems.unshift({ title: item.label });
       return breadcrumbItems;
     }

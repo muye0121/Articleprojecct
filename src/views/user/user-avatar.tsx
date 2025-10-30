@@ -1,19 +1,21 @@
 import type { FC, RefObject } from "react";
-import { Space, Button, Avatar, Input, InputRef, message } from "antd";
+import { Space, Button, Avatar, Input, InputRef, message} from "antd";
 import useUserStore, { selectAvatar } from "@/store/user-stores";
 import { useRef, useState } from "react";
 import { useMemo } from "react";
 import { updateAvatarApi } from "@/api/user-api";
 import to from "await-to-js";
-import { ActionFunctionArgs, useNavigation } from "react-router-dom";
-import { useSubmit, Navigation } from "react-router-dom";
+import { ActionFunctionArgs } from "react-router-dom";
+import { useSubmit} from "react-router-dom";
+import { useNavSubmitting } from "@/utils/hooks";
 const UserAvatar: FC = () => {
   const avatar = useUserStore(selectAvatar);
   const iptRef: RefObject<InputRef> = useRef(null);
   const [newAvatar, setNewAvatar] = useState("");
-  const navigation = useNavigation();
+  const submitting=useNavSubmitting('PATCH')
   const submit = useSubmit();
   const saveAvatar = () => {
+    if(submitting) return 
     submit({ avatar: newAvatar }, { method: "PATCH" });
   };
   const isDisabled = useMemo(
@@ -58,7 +60,7 @@ const UserAvatar: FC = () => {
           type="primary"
           disabled={isDisabled}
           onClick={saveAvatar}
-          loading={navigation.state !== "idle" && { delay: 200 }}
+          loading={submitting&& { delay: 200 }}
         >
           保存头像
         </Button>

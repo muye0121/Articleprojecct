@@ -2,10 +2,10 @@ import { FC } from "react";
 import { Image, Space } from "antd";
 import styles from "@/views/home/css/home.module.less";
 // 二维码
-import bili from "@/assets/images/bili.jpg";
-import douyin from "@/assets/images/douyin.jpg";
-import mp from "@/assets/images/mp.jpg";
-
+import jay from "@/assets/images/jay.png";
+import GEM from '@/assets/images/GEM.png'
+import GEM2 from '@/assets/images/GEM2.png'
+import syz from '@/assets/images/syz.png'
 import "@/views/home/css/home.module.less";
 
 const fallbackImage =
@@ -17,26 +17,34 @@ const Home: FC = () => {
       <h1 className={styles.title}>快来关注我吧~</h1>
       <br />
       <Space direction="horizontal" size={50}>
+        {" "}
         <Image
-          width={300}
-          height={500}
+          width={400}
+          height={400}
           className={styles.qrImage}
           fallback={fallbackImage}
-          src={douyin}
+          src={jay}
+        />
+         <Image
+          width={400}
+          height={400}
+          className={styles.qrImage}
+          fallback={fallbackImage}
+          src={GEM}
         />
         <Image
-          width={500}
-          height={500}
+          width={400}
+          height={400}
           className={styles.qrImage}
           fallback={fallbackImage}
-          src={mp}
+          src={GEM2}
         />
         <Image
-          width={300}
-          height={500}
+          width={400}
+          height={400}
           className={styles.qrImage}
           fallback={fallbackImage}
-          src={bili}
+          src={syz}
         />
       </Space>
     </div>

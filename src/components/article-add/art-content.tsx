@@ -15,34 +15,10 @@ const ArticleContent: FC = () => {
   const value = useArtAddStore(selectContent);
   const submit = useSubmit();
   const submitting = useNavSubmitting("POST");
-  const coverImg = useArtAddStore((state) => state.article.cover_img);
   const publish = (state: "已发布" | "草稿") => {
     if (!value) return message.error("请填写文章内容");
-    if (!coverImg) return message.error("请上传文章封面");
     setArticleState(state);
     submit(null, { method: "POST" });
-  };
-  const modules = {
-    toolbar: [
-      ["bold", "italic", "underline", "strike"], // toggled buttons
-      ["blockquote", "code-block"],
-      ["link", "image", "video", "formula"],
-
-      [{ header: 1 }, { header: 2 }], // custom button values
-      [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-      [{ script: "sub" }, { script: "super" }], // superscript/subscript
-      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-      [{ direction: "rtl" }], // text direction
-
-      [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-      [{ font: [] }],
-      [{ align: [] }],
-
-      ["clean"], // remove formatting button
-    ],
   };
   return (
     <div className={styles.artContent}>
@@ -71,3 +47,25 @@ const ArticleContent: FC = () => {
   );
 };
 export default ArticleContent;
+export const modules = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"], // toggled buttons
+      ["blockquote", "code-block"],
+      ["link", "image", "video", "formula"],
+
+      [{ header: 1 }, { header: 2 }], // custom button values
+      [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+      [{ script: "sub" }, { script: "super" }], // superscript/subscript
+      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+      [{ direction: "rtl" }], // text direction
+
+      [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      [{ font: [] }],
+      [{ align: [] }],
+
+      ["clean"], // remove formatting button
+    ],
+  };

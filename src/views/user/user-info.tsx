@@ -1,15 +1,17 @@
 import type { FC } from "react";
 import { Button, Form, Input, message, Space } from "antd";
 import useUserStore, { selectUserinfo } from "@/store/user-stores";
-import { useNavigation, useSubmit } from "react-router-dom";
+import {useSubmit } from "react-router-dom";
 import { ActionFunctionArgs } from "react-router-dom";
 import { updateUserInfoApi } from "@/api/user-api";
 import to from "await-to-js";
+import { useNavSubmitting } from "@/utils/hooks";
 const UserInfo: FC = () => {
   const [formRef] = Form.useForm();
   const submit = useSubmit();
-  const navigation=useNavigation()
+  const submitting=useNavSubmitting('PUT')
   const onFinish = (values: UserInfoForm) => {
+    if(submitting) return 
     submit(values, { method: "PUT" });
   };
   const userinfo = useUserStore(selectUserinfo);
@@ -55,7 +57,7 @@ const UserInfo: FC = () => {
 
       <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
         <Space>
-          <Button type="primary" htmlType="submit" loading={navigation.state!='idle'&&{delay:200}}>
+          <Button type="primary" htmlType="submit" loading={submitting&&{delay:200}}>
             保存
           </Button>
           <Button

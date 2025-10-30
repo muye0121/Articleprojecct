@@ -1,8 +1,9 @@
 import type { FC } from "react";
 import { Menu } from "antd";
-import { useLoaderData, useNavigate,useLocation} from "react-router-dom";
+import {useNavigate,useLocation} from "react-router-dom";
 import { useState } from "react";
 import type { MenuProps } from "antd";
+import { useAsyncValue } from "react-router-dom";
 import {
   HomeOutlined,
   ReadOutlined,
@@ -28,18 +29,14 @@ const iconMap = {
   PictureOutlined: <PictureOutlined />,
   KeyOutlined: <KeyOutlined />,
 };
-const rootSubmenuKeys = ["2", "3"];
+const rootSubmenuKeys = ["2", "3"]; 
 const RootMenu: FC = () => {
- 
-  
-  const data = useLoaderData() as { menus: MenuItem[] }|null;
+  const [menuResult]=useAsyncValue() as[BaseResponse<MenuItem[]>]
+  const menus=menuResult.data ||[]
   const navigate=useNavigate()
   const location=useLocation()
   const selectedkeys=location.pathname==='/'?'/home':location.pathname
-  const [openKeys, setOpenKeys] = useState<string[]>([getOpenKey(data?.menus,selectedkeys)]);
-  
-  if (!data) return;
-  const { menus } = data;
+  const [openKeys, setOpenKeys] = useState<string[]>([getOpenKey(menus,selectedkeys)]);
   resolveMenuIcon(menus);
   const onOpenChange: MenuProps["onOpenChange"] = (keys) => {
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);

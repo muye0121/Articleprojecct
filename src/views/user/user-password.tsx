@@ -3,16 +3,18 @@ import { Button, Form, Input, message, Space,Spin} from "antd";
 import { ActionFunctionArgs, useSubmit } from "react-router-dom";
 import to from "await-to-js";
 import { updatePwdApi } from "@/api/user-api";
-import { useActionData,useNavigation} from "react-router-dom";
+import { useActionData,} from "react-router-dom";
+import { useNavSubmitting } from "@/utils/hooks";
 const UserPassword: FC = () => { 
   const [formRef]=Form.useForm()
   const submit=useSubmit();
-  const navigation=useNavigation()
+  const submitting=useNavSubmitting('PATCH')
   const actionData=useActionData() as {result:boolean|null}
   if(actionData?.result){
     formRef.resetFields()
   }
   const onFinish = (values:ResetPwdForm) => {
+    if(submitting) return 
     submit(values,{method:"PATCH"})
   };
   return (
@@ -24,7 +26,7 @@ const UserPassword: FC = () => {
       onFinish={onFinish}
       autoComplete="off"
     >
-      <Spin spinning={navigation.state!=='idle'} delay={200}>
+      <Spin spinning={submitting} delay={200}>
       <Form.Item
         label="原密码"
         name="old_pwd"

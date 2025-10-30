@@ -86,8 +86,16 @@ export const loader = async () => {
   );
   const current=localData?.state.current
   if (current === ArticleSteps.done) {
-    resetCurrent()
-  }
+     if (useArtAddStore.getState()._hasHydrated) { 
+      // 证明项目中依赖的 Store 数据，已经还原完毕了，此时直接调用 resetCurrent 就行
+      resetCurrent()
+    } else { 
+      // 如果 store 中的数据还没有还原完毕，则延迟 resetCurrent() 函数的执行
+      useArtAddStore.persist.onFinishHydration(() => { 
+        resetCurrent()
+      }) 
+    } 
+    }
   const result=getCateListApi()
   return defer({result});
 };

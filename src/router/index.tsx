@@ -1,58 +1,187 @@
 import { createBrowserRouter } from "react-router-dom";
-import Reg, { action as regAction } from "@/views/auth/reg";
-import Login, { action as logAction } from "@/views/auth/login";
-import Root, { loader as rootloader } from "@/views/root/root";
 import AuthRoot from "@/views/root/auth-root";
-import Home from "@/views/home/home";
+import RouterErrorElement from "@/components/common/router-error-element";
 import AuthLayout from "@/views/auth/auth-layout";
-import UserAvatar,{action as userAvatarAction} from "@/views/user/user-avatar";
-import UserPassword,{action as userPwdAction}from "@/views/user/user-password";
-import UserInfo,{action as userInfoAction}from "@/views/user/user-info";
-import ArticleList from "@/views/article/article-list";
-import ArticleEdit from "@/views/article/article-edit";
-import ArticleCate from "@/views/article/article-cate";
-import ArticleAdd from "@/views/article/article-add";
-const rooter = createBrowserRouter([
+import PageNotFound from "@/components/common/404";
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+const router = createBrowserRouter([
   {
     path: "/reg",
-    action: regAction,
-    element: (
-      <AuthLayout>
-        <Reg />
-      </AuthLayout>
-    ),
+    errorElement: <RouterErrorElement />,
+    async lazy() {
+      const { default: Reg, action } = await import("@/views/auth/reg");
+      return {
+        element: (
+          <AuthLayout>
+            <Reg />
+          </AuthLayout>
+        ),
+        action,
+      };
+    },
   },
   {
     path: "/login",
-    action: logAction,
-    element: (
-      <AuthLayout>
-        <Login />
-      </AuthLayout>
-    ),
+    errorElement: <RouterErrorElement />,
+    async lazy() {
+      const { default: Login, action } = await import("@/views/auth/login");
+      return {
+        element: (
+          <AuthLayout>
+            <Login />
+          </AuthLayout>
+        ),
+        action,
+      };
+    },
   },
   {
     path: "/",
-    element: (
-      <AuthRoot>
-        <Root />
-      </AuthRoot>
-    ),
-    loader: rootloader,
+    errorElement: <RouterErrorElement />,
+    async lazy() {
+      const { default: Root, loader } = await import("@/views/root/root");
+      return {
+        element: (
+          <AuthRoot>
+            <Root />
+          </AuthRoot>
+        ),
+        loader,
+      };
+    },
     children: [
-      { index: true, element: <Home /> },
       {
-        path: "home",
-        element: <Home />,
+        errorElement: <RouterErrorElement />,
+        children: [
+          {
+            index: true,
+            async lazy() {
+              const { default: Home } = await import("@/views/home/home");
+              return {
+                Component: Home,
+              };
+            },
+          },
+          {
+            path: "home",
+            async lazy() {
+              const { default: Home } = await import("@/views/home/home");
+              return {
+                Component: Home,
+              };
+            },
+          },
+          {
+            path: "user-info",
+            async lazy() {
+              const { default: UserInfo, action } = await import(
+                "@/views/user/user-info"
+              );
+              return {
+                Component: UserInfo,
+                action,
+              };
+            },
+          },
+          {
+            path: "user-avatar",
+            async lazy() {
+              const { default: UserAvatar, action } = await import(
+                "@/views/user/user-avatar"
+              );
+              return {
+                Component: UserAvatar,
+                action,
+              };
+            },
+          },
+          {
+            path: "user-pwd",
+            async lazy() {
+              const { default: UserPassword, action } = await import(
+                "@/views/user/user-password"
+              );
+              return {
+                Component: UserPassword,
+                action,
+              };
+            },
+          },
+          {
+            path: "art-cate",
+            errorElement: <RouterErrorElement />,
+            async lazy() {
+              const {
+                default: ArticleCate,
+                action,
+                loader,
+              } = await import("@/views/article/article-cate");
+              return {
+                Component: ArticleCate,
+                action,
+                loader,
+              };
+            },
+          },
+          {
+            path: "art-list",
+            async lazy() {
+              const {
+                default: ArticleList,
+                loader,
+                action,
+              } = await import("@/views/article/article-list");
+              return {
+                Component: ArticleList,
+                action,
+                loader,
+              };
+            },
+          },
+          {
+            path: "art-add",
+            async lazy() {
+              const {
+                default: ArticleAdd,
+                action,
+                loader,
+              } = await import("@/views/article/article-add");
+              return {
+                Component: ArticleAdd,
+                action,
+                loader,
+              };
+            },
+            shouldRevalidate: () => {
+              return false;
+            },
+          },
+          {
+            path: "art-edit/:id",
+            async lazy(){
+              const {default:ArticleEdit,action,loader}=await import('@/views/article/article-edit')
+              return {
+                Component:ArticleEdit,
+                action,
+                loader,
+              }
+            },
+            shouldRevalidate: () => {
+              return false;
+            },
+          },
+          { path: "*", element: <PageNotFound /> },
+        ],
       },
-      { path: "user-info", action:userInfoAction,element: <UserInfo /> },
-      { path: "user-avatar", element: <UserAvatar />,action:userAvatarAction},
-      { path: "user-pwd", element: <UserPassword />,action:userPwdAction},
-      { path: "art-cate", element: <ArticleCate /> },
-      { path: "art-list", element: <ArticleList /> },
-      { path: "art-add", element: <ArticleAdd /> },
-      { path: "art-edit/:id", element: <ArticleEdit /> },
     ],
   },
 ]);
-export default rooter;
+router.subscribe((state)=>{
+  if(state.navigation.location){
+    NProgress.start()
+  }else{
+    NProgress.done()
+  }
+})
+export default router;

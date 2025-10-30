@@ -14,7 +14,7 @@ const Logout: FC = () => {
     console.log("");
   };
   return (
-    <div>
+    <>
       <Popconfirm
         title="退出登录"
         description="您确认退出登录吗？"
@@ -23,9 +23,9 @@ const Logout: FC = () => {
         okText="确认"
         cancelText="取消"
       >
-        <Button type="link">Logout</Button>
+        <Button type="link" size="large">Logout</Button>
       </Popconfirm>
-    </div>
+    </>
   );
 };
 export default Logout;

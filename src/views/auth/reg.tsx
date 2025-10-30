@@ -2,14 +2,16 @@ import type { FC } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Space} from "antd";
 import { Link } from "react-router-dom";
-import { useSubmit, redirect, useNavigation } from "react-router-dom";
+import { useSubmit, redirect,} from "react-router-dom";
 import type { ActionFunctionArgs } from "react-router-dom";
+import { useNavSubmitting } from "@/utils/hooks";
 import { regApi } from "@/api/auth.api";
 import to from "await-to-js";
 const Reg: FC = () => {
-  const submit = useSubmit();
-  const navigation = useNavigation();
+  const submitting=useNavSubmitting('POST')
+  const submit=useSubmit()
   const onFinish = (values: RegForm) => {
+    if(submitting) return 
     submit(values, {
       method: "POST",
       action: "/reg",
@@ -23,7 +25,7 @@ const Reg: FC = () => {
           { required: true, message: "请输入用户名!" },
           {
             pattern: /^[a-zA-Z0-9]{1,10}$/,
-            message: "用户名必须是1-10位的字母数字！",
+            message: "用户名必须是1-10位的字母数字!",
           },
         ]}
       >
@@ -33,7 +35,7 @@ const Reg: FC = () => {
         name="password"
         rules={[
           { required: true, message: "请输入密码!" },
-          { pattern: /^\S{6,15}$/, message: "密码必须是6-15位的非空字符！" },
+          { pattern: /^\S{6,15}$/, message: "密码必须是6-15位的非空字符!" },
         ]}
       >
         <Input
@@ -48,11 +50,11 @@ const Reg: FC = () => {
         validateFirst
         rules={[
           { required: true, message: "请确认密码!" },
-          { pattern: /^\S{6,15}$/, message: "密码必须是6-15位的非空字符！" },
+          { pattern: /^\S{6,15}$/, message: "密码必须是6-15位的非空字符!" },
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (value === getFieldValue("password")) return Promise.resolve();
-              return Promise.reject(new Error("两次密码不一致"));
+              return Promise.reject(new Error("两次密码不一致!"));
             },
           }),
         ]}
@@ -69,7 +71,7 @@ const Reg: FC = () => {
           <Button
             type="primary"
             htmlType="submit"
-            loading={navigation.state != "idle" && { delay: 200 }}
+            loading={submitting&& { delay: 200 }}
           >
             Register
           </Button>
